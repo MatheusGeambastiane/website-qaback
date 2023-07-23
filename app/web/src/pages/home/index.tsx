@@ -2,6 +2,6 @@ import {Container} from './styles'
 
 export const Home = () => {
     return (
-        <Container>home</Container>
+        <Container>home 1/</Container>
     )
 }
