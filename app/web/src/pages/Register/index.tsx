@@ -5,9 +5,20 @@ export const Register = () => {
   return (
     <ContainerRegister>
       <ImageRegister>
-        <h1>Cadastre um produto</h1>
-        <img src="../../../public/products.png" alt="" />
+        <h1 className="desktopImage">Cadastre um produto</h1>
+        <img
+          className="desktopImage"
+          src="../../../public/products.png"
+          alt=""
+        />
       </ImageRegister>
+      <div className="mobile">
+        <img
+          className="mobileImage"
+          src="../../../public/registerMobileBanner.png"
+          alt=""
+        />
+      </div>
       <RegisterForm />
     </ContainerRegister>
   );

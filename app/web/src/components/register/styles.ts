@@ -8,7 +8,14 @@ export const FormContainer = styled.form`
   align-items: center;
     flex: 1;
   gap: 32px;
-  padding: 1rem;
+  @media screen and (max-width: 1000px) {
+    padding-top: 1rem;
+    margin: 1rem;
+    padding-bottom: 2rem;
+    h1 {
+        font-size: 1.5rem;
+    }
+  }
   label {
     font-size: 14px;
     font-style: normal;
@@ -17,12 +24,18 @@ export const FormContainer = styled.form`
     font-weight: 500;
     line-height: 132.3%;
   }
+  
 `;
 export const ContainerRegisterInputs = styled.div`
 width: 24rem;
 display: flex;
 flex-direction: column;
 gap: 2rem;
+padding: 0rem 3rem;
+@media screen and (max-width: 1000px) {
+    width: 100%;
+    gap: 1rem;
+  }
   div {
     display: flex;
     flex-direction: column;
@@ -51,20 +64,6 @@ export const Button = styled.button`
   cursor: pointer;
   background-color: ${(props) => props.theme.black};
   color: ${(props) => props.theme.white};
-`;
-export const ForgotThepassword = styled.div`
-  display: flex;
-  text-align: end;
-  flex-direction: column;
-  gap: 15px;
-
-  label {
-    cursor: pointer;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 132.3%;
-  }
 `;
 
 

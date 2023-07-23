@@ -44,8 +44,10 @@ export const Input = styled.input`
   font-weight: 400;
   line-height: 132.3%;
   @media screen and (max-width: 940px) {
-    padding: 8px 16px;
+    padding: 12px 16px;
+    margin-top: .5rem;
   }
+
 `;
 export const Button = styled.button`
   margin-top: -12px;
@@ -60,7 +62,7 @@ export const Button = styled.button`
   color: ${(props) => props.theme.white};
   @media screen and (max-width: 940px) {
     padding: 8px 16px;
-    margin-top: 0.2rem;
+    margin-top: .5rem;
   }
 `;
 export const ForgotThepassword = styled.div`
@@ -108,19 +110,20 @@ export const Register = styled.div`
     }
     @media screen and (max-width: 940px) {
       gap: 9px;
+      font-size: .85rem;
       margin-top: 0rem;
       padding: 4px 26px;
     }
   }
   @media screen and (max-width: 940px) {
-    gap: 15px;
+    gap: 23px;
   }
   div {
     display: flex;
     flex-direction: column;
     gap: 28px;
     @media screen and (max-width: 940px) {
-      gap: 9px;
+      gap: 19px;
     }
   }
 `;
