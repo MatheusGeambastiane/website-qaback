@@ -1,7 +1,10 @@
-import {Container} from './styles'
+import { Login } from "../../components/login";
+import { Container } from "./styles";
 
 export const Home = () => {
-    return (
-        <Container>home 12/</Container>
-    )
-}
+  return (
+    <Container>
+      <Login />
+    </Container>
+  );
+};
