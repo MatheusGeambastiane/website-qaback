@@ -3,9 +3,9 @@ import { styled } from "styled-components";
 export const FormContainer = styled.form`
   text-align: center;
   display: flex;
-    margin-right: 20rem;
+    margin-right: 25rem;
   flex-direction: column;
-  width: 22rem;
+  width: 25rem;
   gap: 22px;
   padding: 1rem;
   label {
@@ -18,7 +18,7 @@ export const FormContainer = styled.form`
 export const Input = styled.input`
   border-radius: 14px;
   border: 1px solid ${(props) => props.theme.black};
-  padding: 14px 26px;
+  padding: 18px 26px;
 
   font-size: 14px;
   font-style: normal;

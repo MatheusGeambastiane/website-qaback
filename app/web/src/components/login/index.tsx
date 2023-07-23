@@ -11,6 +11,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GoogleIcon } from "../icons/social/google";
 import { FacebookIcon } from "../icons/social/facebook";
+import { Link } from "react-router-dom";
 
 const loginFormSchema = z.object({
   email: z.string(),
@@ -53,7 +54,7 @@ export const Login = () => {
         <DontHaveAccount>
           <span>Não possui uma conta?</span>
           <span className="register">
-            <strong>Clique aqui e registre-se</strong>
+            <Link to={'/register'}>Clique aqui e registre-se</Link>
           </span>
         </DontHaveAccount>
       </FormContainer>

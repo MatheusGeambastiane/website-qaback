@@ -1,5 +1,5 @@
 export const Products = () => {
     return (
-        <h1>register page</h1>
+        <h1>products page</h1>
     )
 }
