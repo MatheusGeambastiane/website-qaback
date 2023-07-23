@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 export const FormContainer = styled.form`
   text-align: center;
   display: flex;
-    margin-right: 25rem;
+  margin-right: 25rem;
   flex-direction: column;
   width: 25rem;
   gap: 22px;
@@ -14,16 +14,38 @@ export const FormContainer = styled.form`
     font-weight: 600;
     line-height: 132.3%;
   }
+  @media screen and (max-width: 950px) {
+    margin-right: 0rem;
+    padding: 2rem 4rem;
+    width: 100%;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-direction: column;
+
+    img {
+      width: 1500px;
+    }
+  }
+  @media screen and (max-width: 1250px) {
+    img {
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 1450px) {
+    margin-right: 5rem;
+  }
 `;
 export const Input = styled.input`
   border-radius: 14px;
   border: 1px solid ${(props) => props.theme.black};
   padding: 18px 26px;
-
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 132.3%;
+  @media screen and (max-width: 940px) {
+    padding: 8px 16px;
+  }
 `;
 export const Button = styled.button`
   margin-top: -12px;
@@ -36,6 +58,10 @@ export const Button = styled.button`
   cursor: pointer;
   background-color: ${(props) => props.theme.black};
   color: ${(props) => props.theme.white};
+  @media screen and (max-width: 940px) {
+    padding: 8px 16px;
+    margin-top: 0.2rem;
+  }
 `;
 export const ForgotThepassword = styled.div`
   display: flex;
@@ -80,11 +106,22 @@ export const Register = styled.div`
     svg {
       width: 22px;
     }
+    @media screen and (max-width: 940px) {
+      gap: 9px;
+      margin-top: 0rem;
+      padding: 4px 26px;
+    }
+  }
+  @media screen and (max-width: 940px) {
+    gap: 15px;
   }
   div {
     display: flex;
     flex-direction: column;
     gap: 28px;
+    @media screen and (max-width: 940px) {
+      gap: 9px;
+    }
   }
 `;
 export const DontHaveAccount = styled.div`
