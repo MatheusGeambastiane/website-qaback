@@ -4,5 +4,5 @@ export const defaultTheme = {
   red: "#FD3F3F",
   blue: "#4863F7",
   black: "#000",
-  text: "#778da9",
+  text: "#000",
 } as const;

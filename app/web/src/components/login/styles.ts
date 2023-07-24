@@ -8,6 +8,14 @@ export const FormContainer = styled.form`
   width: 25rem;
   gap: 22px;
   padding: 1rem;
+  a {
+    text-decoration: none;
+    color: ${(props) => props.theme.black};
+    font-weight: 600;
+  }
+  input {
+    color: ${(props) => props.theme.black};
+  }
   label {
     font-size: 18px;
     font-style: normal;
@@ -34,21 +42,27 @@ export const FormContainer = styled.form`
   @media screen and (max-width: 1450px) {
     margin-right: 5rem;
   }
-`;
-export const Input = styled.input`
-  border-radius: 14px;
-  border: 1px solid ${(props) => props.theme.black};
-  padding: 18px 26px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 132.3%;
-  @media screen and (max-width: 940px) {
-    padding: 12px 16px;
-    margin-top: .5rem;
+  p {
+    background-color: white;
+    font-size: 1rem;
+    color: #0008;
+    font-weight: 200;
   }
-
 `;
+export const ErrorContainer = styled.div`
+width: 100%;
+display: flex;
+align-items: flex-start;
+justify-content: start;
+  color: #d32f2f;
+  span {
+    margin-top: -2rem;
+    padding: 1rem 0rem;
+    background-color: white;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+`
 export const Button = styled.button`
   margin-top: -12px;
   border: none;
