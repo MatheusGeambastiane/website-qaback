@@ -58,7 +58,6 @@ export const ProductsList = styled.div`
   margin-top: 2rem;
   padding: 1rem 2rem;
   height: calc(100vh - 17rem);
-  overflow-y: scroll;
   header {
     display: flex;
     justify-content: space-between;
@@ -86,7 +85,7 @@ export const Cards = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
+  height: 16rem;
   width: 100%;
   background-color: #D9D9D9;
   border-radius: 16px;
@@ -141,6 +140,8 @@ export const CardContainer = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 5rem;
+  height: calc(100vh - 27rem);
+  overflow-y: scroll;
 `;
 
 export const Overlay = styled(Dialog.Overlay)`
@@ -156,7 +157,8 @@ export const Overlay = styled(Dialog.Overlay)`
 `;
 
 export const Content = styled(Dialog.Content)`
-  width: 30%;
+  overflow-y: scroll;
+  height: 10rem;
   background-color: ${(props) => props.theme.yellow};
   border-radius: 14px;
   
