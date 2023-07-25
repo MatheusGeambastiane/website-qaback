@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ContextProducts } from "../../context/products";
 import {
   ContainerHeaderProducts,
@@ -17,9 +17,27 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
 const schema = z.object({
   name: z.string(),
-  image: z.string(),
+  image: z
+    .any()
+    .refine((files) => files?.length == 1, "Image is required.")
+    .refine(
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
   description: z.string(),
   category: z.string(),
   price: z.string(),
@@ -29,12 +47,20 @@ const schema = z.object({
 type FormProps = z.infer<typeof schema>;
 
 export const Products = () => {
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      // Armazena o nome do arquivo selecionado no estado 'selectedImage'
+      setSelectedImage(file.name);
+    }
+  };
   const { register, handleSubmit } = useForm<FormProps>({
     resolver: zodResolver(schema),
     mode: "all",
   });
   const { products, setProducts } = useContext(ContextProducts);
-  
+
   const getProducts = useCallback(async () => {
     try {
       const res = await axios.get("http://localhost:3300");
@@ -43,26 +69,27 @@ export const Products = () => {
       console.log(error);
     }
   }, [setProducts]);
-  
+
   useEffect(() => {
     getProducts();
   }, [getProducts]);
 
   const onSubmit = async (e: FormProps) => {
-    await axios
-      .post("http://localhost:3300", {
-        name: e.name,
-        price: e.price,
-        category: e.category,
-        image: e.image,
-        description: e.description,
-        shipment: e.shipment,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        getProducts();
-      })
-      .catch(({ data }) => console.log(data));
+    try {
+      const formData = new FormData();
+      formData.append("name", e.name);
+      formData.append("price", e.price);
+      formData.append("category", e.category);
+      formData.append("image", e.image);
+      formData.append("description", e.description);
+      formData.append("shipment", e.shipment);
+      console.log('formData: ', formData)
+      const response = await axios.post("http://localhost:3300", formData, {headers: {"Content-Type": "multipart/form-data"}});
+      console.log(response.data);
+      getProducts();
+    } catch (error) {
+      console.log(error.response?.data);
+    }
   };
 
   return (
@@ -141,9 +168,12 @@ export const Products = () => {
                       <label htmlFor="">Imagens:</label>
                       <input
                         {...register("image")}
-                        type="text"
-                        placeholder="imagem"
+                        type="file"
+                        onChange={handleImageChange}
                       />
+                      {selectedImage && (
+                        <p>Arquivo selecionado: {selectedImage}</p>
+                      )}
                     </div>
                     <div>
                       <label htmlFor="">frete:</label>

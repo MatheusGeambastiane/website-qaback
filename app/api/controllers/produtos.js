@@ -11,14 +11,25 @@ export const getProducts = (_, res) => {
     return res.status(200).json(data);
   });
 };
-
 export const addProducts = (req, res) => {
-    const q = "INSERT INTO produtos (`name`, `description`, `price`, `category`, `shipment`, `image`) VALUES (?, ?, ?, ?, ?, ?)";
+    const q =
+      "INSERT INTO produtos (`name`, `description`, `price`, `category`, `shipment`, `image`) VALUES (?, ?, ?, ?, ?, ?)";
   
-    const values = [req.body.name, req.body.description, req.body.price, req.body.category, req.body.shipment, req.body.image];
+    const values = [
+      req.body.name,
+      req.body.description,
+      req.body.price,
+      req.body.category,
+      req.body.shipment,
+      `${req.protocol}://${req.get('host')}/${req.file.filename}`
+    ];
   
     db.query(q, values, (err) => {
-      if (err) return res.json(err);
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Erro ao adicionar produto" });
+      }
+  
       return res.status(200).json("Produto cadastrado com sucesso!");
     });
   };
@@ -56,7 +67,11 @@ export const Login = (req, res) => {
     }
   });
 };
+export const PhotoDB = (req, res) => {
+    // image = req.body.image
+    console.log(req.body)
 
+}
 
 export const Register = (req, res) => {
   const email = req.body.email;

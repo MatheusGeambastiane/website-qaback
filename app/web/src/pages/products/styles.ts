@@ -59,6 +59,7 @@ export const ProductsList = styled.div`
   padding: 1rem 2rem;
   height: calc(100vh - 17rem);
   header {
+    margin: 0rem 3rem;
     display: flex;
     justify-content: space-between;
     button {
@@ -79,7 +80,6 @@ export const ProductsList = styled.div`
   }
 `;
 
-
 export const Cards = styled.div`
   align-items: center;
   display: flex;
@@ -87,7 +87,7 @@ export const Cards = styled.div`
   justify-content: center;
   height: 16rem;
   width: 100%;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   border-radius: 16px;
   img {
     padding: 1rem;
@@ -134,7 +134,7 @@ export const DetailsCard = styled.div`
 `;
 export const CardContainer = styled.div`
   margin-top: 2rem;
-  font-size: 0.7rem;
+  font-size: 1rem;
   margin-left: 3rem;
   display: flex;
   justify-content: flex-start;
@@ -157,11 +157,9 @@ export const Overlay = styled(Dialog.Overlay)`
 `;
 
 export const Content = styled(Dialog.Content)`
-  overflow-y: scroll;
-  height: 10rem;
+  width: 35rem;
   background-color: ${(props) => props.theme.yellow};
   border-radius: 14px;
-  
 `;
 
 export const FormContainer = styled.form`
