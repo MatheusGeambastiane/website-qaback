@@ -58,7 +58,7 @@ export const RegisterForm = () => {
   };
   console.log(errors);
   const handleForm = (data: RegisterFormInputs) => {
-    Axios.post("http://localhost:3001/register", {
+    Axios.post("http://localhost:3300/register", {
       email: data.email,
       password: data.password,
     }).then((response) => {

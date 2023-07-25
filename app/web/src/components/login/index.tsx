@@ -64,7 +64,7 @@ export const Login = () => {
   });
 
   const handleForm = (data: LoginFormInputs) => {
-    Axios.post("http://localhost:3001/login", {
+    Axios.post("http://localhost:3300/login", {
       email: data.email,
       password: data.password,
     })
