@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { ContextProducts } from "../../context/products";
 import {
   ContainerHeaderProducts,
@@ -17,7 +17,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const MAX_FILE_SIZE = 500000;
+const MAX_FILE_SIZE = 10500000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -27,6 +27,7 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const schema = z.object({
   name: z.string(),
+  description: z.string(),
   image: z
     .any()
     .refine((files) => files?.length == 1, "Image is required.")
@@ -38,7 +39,6 @@ const schema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
-  description: z.string(),
   category: z.string(),
   price: z.string(),
   shipment: z.string(),
@@ -47,15 +47,11 @@ const schema = z.object({
 type FormProps = z.infer<typeof schema>;
 
 export const Products = () => {
-  const [selectedImage, setSelectedImage] = useState<string>("");
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      // Armazena o nome do arquivo selecionado no estado 'selectedImage'
-      setSelectedImage(file.name);
-    }
-  };
-  const { register, handleSubmit } = useForm<FormProps>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormProps>({
     resolver: zodResolver(schema),
     mode: "all",
   });
@@ -74,21 +70,24 @@ export const Products = () => {
     getProducts();
   }, [getProducts]);
 
-  const onSubmit = async (e: FormProps) => {
+  console.log(errors);
+  const Submit = async (e: FormProps) => {
     try {
       const formData = new FormData();
       formData.append("name", e.name);
       formData.append("price", e.price);
       formData.append("category", e.category);
-      formData.append("image", e.image);
+      formData.append("image", e.image[0]); // Use e.image[0] para acessar o arquivo.
       formData.append("description", e.description);
       formData.append("shipment", e.shipment);
-      console.log('formData: ', formData)
-      const response = await axios.post("http://localhost:3300", formData, {headers: {"Content-Type": "multipart/form-data"}});
+      console.log("formData: ", formData);
+      const response = await axios.post("http://localhost:3300", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log(response.data);
       getProducts();
     } catch (error) {
-      console.log(error.response?.data);
+      console.log(error);
     }
   };
 
@@ -130,7 +129,7 @@ export const Products = () => {
               </header>
               <Overlay>
                 <Content>
-                  <FormContainer onSubmit={handleSubmit(onSubmit)}>
+                  <FormContainer onSubmit={handleSubmit(Submit)}>
                     <h1>Painel de cadastro</h1>
                     <div>
                       <label>Nome do Produto</label>
@@ -166,14 +165,7 @@ export const Products = () => {
                     </div>
                     <div>
                       <label htmlFor="">Imagens:</label>
-                      <input
-                        {...register("image")}
-                        type="file"
-                        onChange={handleImageChange}
-                      />
-                      {selectedImage && (
-                        <p>Arquivo selecionado: {selectedImage}</p>
-                      )}
+                      <input {...register("image")} type="file" />
                     </div>
                     <div>
                       <label htmlFor="">frete:</label>
@@ -183,7 +175,7 @@ export const Products = () => {
                         placeholder="Frete"
                       />
                     </div>
-                    <button type="submit">adicionar</button>
+                    <button type="submit">adcionar produto</button>
                   </FormContainer>
                 </Content>
               </Overlay>
