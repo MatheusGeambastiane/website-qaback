@@ -23,7 +23,7 @@ import { useFilter } from "../../hooks/useFilter";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
 
-const MAX_FILE_SIZE = 10500000;
+const MAX_FILE_SIZE = 1000000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
