@@ -79,6 +79,7 @@ export const ProductsList = styled.div`
       height: 3rem;
       border: none;
     }
+
     input {
       padding: 1rem;
       border: 1px solid black;
@@ -189,6 +190,41 @@ export const FormContainer = styled.form`
     border: 1px solid #000;
     background: #fff;
   }
+  .toast {
+    color: red;
+    width: 15rem;
+  }
+  .Toastify__progress-bar-theme--light {
+    background: ${(props) => props.theme.yellow};
+  }
+  .Toastify__close-button{
+    display: none;
+  }
+  .custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  .custom-file-input::before {
+    content: "Selecionar imagem";
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: .5rem;
+    outline: none;
+    white-space: nowrap;
+    color: black;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 400;
+    font-size: 10pt;
+  }
+  .custom-file-input:hover::before {
+    border-color: black;
+  }
+  .custom-file-input:active::before {
+    background: ${(props) => props.theme.black};
+  }
+
   button {
     margin-top: 1rem;
     cursor: pointer;
@@ -233,7 +269,6 @@ export const FilterComponent = styled(Accordion.Item)<{ isSelected: boolean }>`
     font-size: 15px;
     width: 100%;
     font-weight: 600;
-
   }
 `;
 
@@ -247,7 +282,6 @@ export const OpenFilters = styled(Accordion.Trigger)`
     font-size: 15px;
     width: 100%;
     font-weight: 600;
-
   }
   border: none;
   background-color: red;

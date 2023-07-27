@@ -22,8 +22,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFilter } from "../../hooks/useFilter";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const MAX_FILE_SIZE = 1000000;
+const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -32,8 +34,8 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const schema = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: z.string().nonempty("Preencha o campo Nome"),
+  description: z.string().nonempty("Descrição do produto necessaria."),
   image: z
     .any()
     .refine((files) => files?.length == 1, "Image is required.")
@@ -45,9 +47,9 @@ const schema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
-  category: z.string(),
-  price: z.string(),
-  shipment: z.string(),
+  category: z.string().nonempty("Categoria necessaria."),
+  price: z.string().nonempty("Defina o preço do produto."),
+  shipment: z.string().nonempty("Defina o valor do frete."),
 });
 
 type FormProps = z.infer<typeof schema>;
@@ -56,6 +58,7 @@ export const Products = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormProps>({
     resolver: zodResolver(schema),
@@ -64,6 +67,8 @@ export const Products = () => {
 
   const { products, setProducts } = useContext(ContextProducts);
 
+  const [toasty, setToasty] = useState("");
+  const notify = () => toast(toasty);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const handleCategoryFilter = (category: string) => {
@@ -78,31 +83,45 @@ export const Products = () => {
     getProducts(setProducts);
   }, [setProducts]);
 
-  console.log(errors);
-
   const filteredProductBone = useFilter("category", "bone");
   console.log(filteredProductBone);
 
-  const Submit = async (e: FormProps) => {
+  const Submit = (data: FormProps) => {
     try {
       const formData = new FormData();
-      formData.append("name", e.name);
-      formData.append("price", e.price);
-      formData.append("category", e.category);
-      formData.append("image", e.image[0]);
-      formData.append("description", e.description);
-      formData.append("shipment", e.shipment);
+      formData.append("name", data.name);
+      formData.append("price", data.price);
+      formData.append("category", data.category);
+      formData.append("image", data.image[0]);
+      formData.append("description", data.description);
+      formData.append("shipment", data.shipment);
       console.log("formData: ", formData);
-      const response = await axios.post("http://localhost:3300", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log(response.data);
-      getProducts(setProducts);
+      axios
+        .post("http://localhost:3300", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          setToasty("Produto enviado com sucesso!");
+          console.log(response.data);
+          getProducts(setProducts);
+          reset();
+        })
+        .catch((error) => {
+          setToasty("Erro ao enviar produto!");
+          console.log(error);
+        });
     } catch (error) {
       console.log(error);
     }
-  };
 
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors)
+        .map((error) => error.message)
+        .join("");
+      toast.error(errorMessages);
+    }
+  };
+  console.log(errors);
   return (
     <div>
       <ContainerHeaderProducts>
@@ -235,8 +254,12 @@ export const Products = () => {
                       />
                     </div>
                     <div>
-                      <label htmlFor="">Imagens:</label>
-                      <input {...register("image")} type="file" />
+                      <label>Imagens:</label>
+                      <input
+                        {...register("image")}
+                        className="custom-file-input"
+                        type="file"
+                      />
                     </div>
                     <div>
                       <label htmlFor="">frete:</label>
@@ -246,7 +269,10 @@ export const Products = () => {
                         placeholder="Frete"
                       />
                     </div>
-                    <button type="submit">adcionar produto</button>
+                    <ToastContainer className="toast" />
+                    <button type="submit" onClick={notify}>
+                      adcionar produto
+                    </button>
                   </FormContainer>
                 </Content>
               </Overlay>
