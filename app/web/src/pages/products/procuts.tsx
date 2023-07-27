@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ContextProducts } from "../../context/products";
 import {
   ContainerHeaderProducts,
@@ -10,12 +10,18 @@ import {
   Overlay,
   DetailsCard,
   FormContainer,
+  FilterComponent,
+  OpenFilters,
+  ContentList,
 } from "./styles";
 import axios from "axios";
 import * as z from "zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFilter } from "../../hooks/useFilter";
+import * as Accordion from "@radix-ui/react-accordion";
+import { getProducts } from "../../services/getProducts";
 
 const MAX_FILE_SIZE = 10500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -55,29 +61,35 @@ export const Products = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
+
   const { products, setProducts } = useContext(ContextProducts);
 
-  const getProducts = useCallback(async () => {
-    try {
-      const res = await axios.get("http://localhost:3300");
-      setProducts(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [setProducts]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  const handleCategoryFilter = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
 
   useEffect(() => {
-    getProducts();
-  }, [getProducts]);
+    getProducts(setProducts);
+  }, [setProducts]);
 
   console.log(errors);
+
+  const filteredProductBone = useFilter("category", "bone");
+  console.log(filteredProductBone);
+
   const Submit = async (e: FormProps) => {
     try {
       const formData = new FormData();
       formData.append("name", e.name);
       formData.append("price", e.price);
       formData.append("category", e.category);
-      formData.append("image", e.image[0]); // Use e.image[0] para acessar o arquivo.
+      formData.append("image", e.image[0]);
       formData.append("description", e.description);
       formData.append("shipment", e.shipment);
       console.log("formData: ", formData);
@@ -85,7 +97,7 @@ export const Products = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(response.data);
-      getProducts();
+      getProducts(setProducts);
     } catch (error) {
       console.log(error);
     }
@@ -100,15 +112,74 @@ export const Products = () => {
       <ProductsContainer>
         <nav>
           <ul>
-            <li className="first">Filtar por:</li>
-            <li>Categoria</li>
-            <li>Roupas</li>
-            <li>Camisas</li>
-            <li>Acessórios</li>
-            <li>Preços</li>
-            <li>Até 200</li>
-            <li>Até 100</li>
-            <li>Frete grátis</li>
+            <h2 className="first">Filtar por:</h2>
+            <Accordion.Root
+              className="AccordionRoot"
+              type="single"
+              defaultValue="item-1"
+              collapsible
+            >
+              <FilterComponent value="item-1">
+                <OpenFilters>
+                  <h2>Categorias: </h2>
+                </OpenFilters>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    onClick={() => handleCategoryFilter("")}
+                  >
+                    Todos
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    onClick={() => handleCategoryFilter("Roupas")}
+                  >
+                    Roupas
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    onClick={() => handleCategoryFilter("Camisas")}
+                  >
+                    Camisas
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    onClick={() => handleCategoryFilter("Acessórios")}
+                  >
+                    Acessórios
+                  </li>
+                </ContentList>
+              </FilterComponent>
+
+              <FilterComponent value="2" className="AccordionRoot">
+                <OpenFilters>
+                  <h2>Preços: </h2>
+                </OpenFilters>
+                <Accordion.Content>
+                  <ContentList>
+                    <li className="contentList">Até R$ 100</li>
+                  </ContentList>
+                  <ContentList>
+                    <li className="contentList">Até R$ 100</li>
+                  </ContentList>
+                  <ContentList>
+                    <li className="contentList">Até R$ 100</li>
+                  </ContentList>
+                  <ContentList>
+                    <li className="contentList">Até R$ 100</li>
+                  </ContentList>
+                </Accordion.Content>
+              </FilterComponent>
+              <FilterComponent className="AccordionRoot">
+                <h2>Frete grátis</h2>
+              </FilterComponent>
+            </Accordion.Root>
           </ul>
         </nav>
         <section>
@@ -181,7 +252,7 @@ export const Products = () => {
               </Overlay>
             </Dialog.Root>
             <CardContainer>
-              {products.map((item) => {
+              {filteredProducts.map((item) => {
                 return (
                   <div>
                     <Cards>

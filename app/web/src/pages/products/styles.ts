@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Accordion from "@radix-ui/react-accordion";
 
 export const ContainerHeaderProducts = styled.header`
   height: 10rem;
@@ -13,6 +14,14 @@ export const ContainerHeaderProducts = styled.header`
 export const ProductsContainer = styled.section`
   width: 100%;
   display: flex;
+  h2 {
+    text-align: justify;
+    padding: 1rem;
+    border: none;
+    font-size: 15px;
+    width: 100%;
+    font-weight: 600;
+  }
   .first {
     display: flex;
     align-items: center;
@@ -26,8 +35,7 @@ export const ProductsContainer = styled.section`
     ul {
       li {
         padding: 1rem;
-        font-size: 1rem;
-        border-bottom: 1px solid black;
+        font-size: 12px;
       }
     }
   }
@@ -202,4 +210,47 @@ export const Group = styled.section`
   background-color: red;
   flex-direction: row;
   gap: 1rem;
+`;
+
+export const FilterComponent = styled(Accordion.Item)<{ isSelected: boolean }>`
+  li {
+    &:hover {
+      font-weight: 500;
+      cursor: pointer;
+    }
+  }
+  .contentList {
+    padding: 0.5rem;
+    border: none;
+    list-style: none;
+    margin-left: 1rem;
+  }
+  h2 {
+    cursor: pointer;
+    text-align: justify;
+    padding: 1rem;
+    border: none;
+    font-size: 15px;
+    width: 100%;
+    font-weight: 600;
+
+  }
+`;
+
+export const ContentList = styled(Accordion.Content)``;
+export const OpenFilters = styled(Accordion.Trigger)`
+  width: 100%;
+  h2 {
+    text-align: justify;
+    padding: 1rem;
+    border: none;
+    font-size: 15px;
+    width: 100%;
+    font-weight: 600;
+
+  }
+  border: none;
+  background-color: red;
+  background-color: transparent;
+  cursor: pointer;
 `;
