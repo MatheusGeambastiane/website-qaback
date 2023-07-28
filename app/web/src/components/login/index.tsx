@@ -21,7 +21,7 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
-import OutlinedInput from '@mui/material/OutlinedInput';
+import OutlinedInput from "@mui/material/OutlinedInput";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const loginFormSchema = z.object({
@@ -36,7 +36,7 @@ const loginFormSchema = z.object({
     errorMap: () => {
       return { message: "Senha inválida" };
     },
-  })
+  }),
 });
 
 type LoginFormInputs = z.infer<typeof loginFormSchema>;
@@ -46,7 +46,6 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = React.useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
@@ -78,6 +77,11 @@ export const Login = () => {
             setMsgAlert("");
           }, 3000);
           localStorage.setItem("auth", "true");
+
+          localStorage.setItem("jwt", response.data.token);
+          const userData = response.data.user.email;
+          localStorage.setItem("user", JSON.stringify(userData));
+          console.log(userData)
           navigate("/products");
         }
         if (
@@ -121,7 +125,7 @@ export const Login = () => {
             <p className="inputLabel">Senha</p>
           </InputLabel>
           <OutlinedInput
-           {...register("password")}
+            {...register("password")}
             id="outlined-adornment-password"
             type={showPassword ? "text" : "password"}
             endAdornment={
@@ -138,9 +142,9 @@ export const Login = () => {
             }
           />
         </FormControl>
-       <ErrorContainer>
-       <span className="error">{msgAlert}</span>
-       </ErrorContainer>
+        <ErrorContainer>
+          <span className="error">{msgAlert}</span>
+        </ErrorContainer>
 
         <Button>Iniciar sessão</Button>
         <Register>

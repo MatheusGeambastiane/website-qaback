@@ -9,6 +9,8 @@ import {
   Register,
   deleteProducts,
 } from "../controllers/produtos.js";
+import jwt from 'jsonwebtoken';
+import {secretKey} from '../tokens/secret-token.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,11 +33,29 @@ const upload = multer({
 
 const router = express.Router();
 
-router.get("/", getProducts);
+const validJwt = (req, res, next) => {
+  const authToken = req.headers.authorization
+  if(!authToken) {
+    res.send(403)
+    return
+  }
+
+  const jwtPayload = jwt.verify(authToken, secretKey)
+  if(!jwtPayload) {
+    res.send(403)
+    return
+  }
+
+  req.body.userEmail = jwtPayload.email
+
+  next()
+}
+
+router.get("/", validJwt, getProducts);
 router.post("/login", Login);
 router.post("/register", Register);
 
-router.post("/", upload.single("image"), addProducts);
+router.post("/", upload.single("image"), validJwt, addProducts);
 router.delete("/:id", deleteProducts);
 
 export default router;

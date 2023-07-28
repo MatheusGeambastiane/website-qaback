@@ -6,7 +6,8 @@ export const getProducts = async (
   setProducts: Dispatch<SetStateAction<Products[]>>
 ) => {
   try {
-    const res = await axios.get<Products[]>("http://localhost:3300");
+    const jwt = localStorage.getItem('jwt')
+    const res = await axios.get<Products[]>("http://localhost:3300", { headers: {'Authorization': jwt}});
     setProducts(res.data);
   } catch (error) {
     console.log(error);

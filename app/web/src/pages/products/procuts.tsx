@@ -19,11 +19,11 @@ import * as z from "zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFilter } from "../../hooks/useFilter";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -54,6 +54,7 @@ const schema = z.object({
 
 type FormProps = z.infer<typeof schema>;
 
+
 export const Products = () => {
   const {
     register,
@@ -64,8 +65,19 @@ export const Products = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
+  const navigate = useNavigate()
 
   const { products, setProducts } = useContext(ContextProducts);
+  const [user] = useState(() => {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  });
+
+  function logOut() {
+    localStorage.setItem("auth", "false");
+    localStorage.setItem("jwt", "");
+    navigate('/')
+  }
 
   const [toasty, setToasty] = useState("");
   const notify = () => toast(toasty);
@@ -83,11 +95,9 @@ export const Products = () => {
     getProducts(setProducts);
   }, [setProducts]);
 
-  const filteredProductBone = useFilter("category", "bone");
-  console.log(filteredProductBone);
-
   const Submit = (data: FormProps) => {
     try {
+      const jwt = localStorage.getItem("jwt");
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("price", data.price);
@@ -98,7 +108,10 @@ export const Products = () => {
       console.log("formData: ", formData);
       axios
         .post("http://localhost:3300", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: jwt,
+          },
         })
         .then((response) => {
           setToasty("Produto enviado com sucesso!");
@@ -122,11 +135,13 @@ export const Products = () => {
     }
   };
   console.log(errors);
+  console.log("usersss:", user?.email);
   return (
     <div>
       <ContainerHeaderProducts>
         <h1>Backoffice Loja Joga Junto</h1>
-        <div>Bem vindo, Usuário!</div>
+        <div>Bem vindo: {user}</div>
+        <button onClick={logOut}>sair</button>
       </ContainerHeaderProducts>
       <ProductsContainer>
         <nav>
