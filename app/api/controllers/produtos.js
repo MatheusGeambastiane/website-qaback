@@ -61,6 +61,7 @@ export const addProducts = (req, res) => {
     })
 }
 export const Login = (req, res) => {
+  console.log('Chegamos no Login')
   const email = req.body.email;
   const password = req.body.password;
 
@@ -102,13 +103,17 @@ export const Register = (req, res) => {
     if (err) {
       res.status(500).json({ error: "Erro ao verificar usuário no banco de dados" });
     }
+
     if (result.length == 0) {
       bcrypt.hash(password, saltRounds, (err, hash) => {
         db.query(
           "INSERT INTO usuarios (email, password) VALUES (?,?)",
           [email, hash],
           (error, response) => {
+            console.log('error: ', error)
+            console.log('response: ', response)
             if (err) {
+              console.log('err: ', err)
               res.status(500).json({ error: "Erro ao cadastrar usuário" });
             }
 
