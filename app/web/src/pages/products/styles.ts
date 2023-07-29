@@ -3,17 +3,11 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as Accordion from "@radix-ui/react-accordion";
 
 export const ContainerHeaderProducts = styled.header`
-  height: 10rem;
-  display: flex;
-  justify-content: center;
-  gap: 20%;
-  align-items: center;
-  flex-direction: row;
 `;
 
 export const ProductsContainer = styled.section`
-  width: 100%;
   display: flex;
+  background-color: red;
   h2 {
     text-align: justify;
     padding: 1rem;
@@ -29,7 +23,7 @@ export const ProductsContainer = styled.section`
     padding-top: 2.1rem;
   }
   nav {
-    width: 15rem;
+    width: 15%;
     height: calc(100vh - 10rem);
     background-color: ${(props) => props.theme.yellow};
     ul {
@@ -39,32 +33,10 @@ export const ProductsContainer = styled.section`
       }
     }
   }
-  section {
-    background-color: red;
-    width: 100%;
-    height: 5rem;
-    background-color: ${(props) => props.theme.yellow};
-    padding: 1rem 2rem;
-    width: 100%;
-    header {
-      ul {
-        padding: 1rem 3rem;
-        list-style: none;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        li {
-          cursor: pointer;
-          font-weight: 600;
-        }
-      }
-    }
-  }
 `;
 export const ProductsList = styled.div`
-  margin-top: 2rem;
-  padding: 1rem 2rem;
+  padding: 0rem 1rem;
+  width: 100%;
   height: calc(100vh - 17rem);
   header {
     margin: 0rem 3rem;
@@ -149,22 +121,22 @@ export const CardContainer = styled.div`
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 5rem;
-  height: calc(100vh - 27rem);
+  height: calc(100vh - 17rem);
   overflow-y: scroll;
+  width: calc(100% - 5%);
 `;
 
 export const Overlay = styled(Dialog.Overlay)`
   width: 100%;
+  height: 100vh;
   top: 0px;
   left: 0px;
-  height: 100vh;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #0009;
-  position: absolute;
 `;
-
 export const Content = styled(Dialog.Content)`
   width: 35rem;
   background-color: ${(props) => props.theme.yellow};
@@ -190,6 +162,9 @@ export const FormContainer = styled.form`
     border: 1px solid #000;
     background: #fff;
   }
+  .none {
+    display: none;
+  }
   .toast {
     color: red;
     width: 15rem;
@@ -197,7 +172,7 @@ export const FormContainer = styled.form`
   .Toastify__progress-bar-theme--light {
     background: ${(props) => props.theme.yellow};
   }
-  .Toastify__close-button{
+  .Toastify__close-button {
     display: none;
   }
   .custom-file-input::-webkit-file-upload-button {
@@ -208,7 +183,7 @@ export const FormContainer = styled.form`
     display: inline-block;
     border: 1px solid #999;
     border-radius: 3px;
-    padding: .5rem;
+    padding: 0.5rem;
     outline: none;
     white-space: nowrap;
     color: black;
@@ -243,7 +218,6 @@ export const FormContainer = styled.form`
 export const Group = styled.section`
   display: flex;
   width: 100%;
-  background-color: red;
   flex-direction: row;
   gap: 1rem;
 `;
@@ -284,7 +258,7 @@ export const OpenFilters = styled(Accordion.Trigger)`
     font-weight: 600;
   }
   border: none;
-  background-color: red;
+
   background-color: transparent;
   cursor: pointer;
 `;

@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { createContext, ReactNode, useState } from "react";
 
 export interface Products {
@@ -39,6 +40,14 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
     const userData = localStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;
   });
+
+  useEffect(() => {
+    if (user && user.email) {
+      const userName = user.email.split("@")[0];
+      console.log("Username:", userName);
+    }
+  }, [user]);
+  
   console.log('user: ',user)
   return (
     <ContextProducts.Provider

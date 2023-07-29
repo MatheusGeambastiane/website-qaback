@@ -80,7 +80,7 @@ export const Login = (req, res) => {
           const user = result[0];
           
           // Gerar o token JWT com informações do usuário
-          const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
+          const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '24h' });
           
           delete user.password
 

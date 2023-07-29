@@ -24,6 +24,9 @@ import { getProducts } from "../../services/getProducts";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { Carrousel } from "../../components/swiper";
+import React from "react";
+import { Header } from "../../components/header";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -41,7 +44,7 @@ const schema = z.object({
     .refine((files) => files?.length == 1, "Image is required.")
     .refine(
       (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
+      `Tamanho da imagem não pode ser maior que 5mb.`
     )
     .refine(
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
@@ -49,11 +52,10 @@ const schema = z.object({
     ),
   category: z.string().nonempty("Categoria necessaria."),
   price: z.string().nonempty("Defina o preço do produto."),
-  shipment: z.string().nonempty("Defina o valor do frete."),
+  shipment: z.string()
 });
 
 type FormProps = z.infer<typeof schema>;
-
 
 export const Products = () => {
   const {
@@ -65,22 +67,20 @@ export const Products = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
-  const navigate = useNavigate()
+  
+  const navigate = useNavigate();
+
+  const dispatchToast = () => {
+    const firstError = Object.values(errors)[0];
+    if (firstError) {
+      console.log("Error message:", firstError.message);
+      toast.error(firstError.message);
+    }
+  };
 
   const { products, setProducts } = useContext(ContextProducts);
-  const [user] = useState(() => {
-    const userData = localStorage.getItem("user");
-    return userData ? JSON.parse(userData) : null;
-  });
 
-  function logOut() {
-    localStorage.setItem("auth", "false");
-    localStorage.setItem("jwt", "");
-    navigate('/')
-  }
 
-  const [toasty, setToasty] = useState("");
-  const notify = () => toast(toasty);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const handleCategoryFilter = (category: string) => {
@@ -105,7 +105,6 @@ export const Products = () => {
       formData.append("image", data.image[0]);
       formData.append("description", data.description);
       formData.append("shipment", data.shipment);
-      console.log("formData: ", formData);
       axios
         .post("http://localhost:3300", formData, {
           headers: {
@@ -114,34 +113,26 @@ export const Products = () => {
           },
         })
         .then((response) => {
-          setToasty("Produto enviado com sucesso!");
+          console.log("Produto enviado com sucesso!");
           console.log(response.data);
           getProducts(setProducts);
           reset();
         })
         .catch((error) => {
-          setToasty("Erro ao enviar produto!");
+          console.log("Erro ao enviar produto!");
           console.log(error);
         });
     } catch (error) {
       console.log(error);
     }
-
-    if (Object.keys(errors).length > 0) {
-      const errorMessages = Object.values(errors)
-        .map((error) => error.message)
-        .join("");
-      toast.error(errorMessages);
-    }
   };
-  console.log(errors);
-  console.log("usersss:", user?.email);
+  dispatchToast()
   return (
     <div>
+      <ToastContainer className="toast" />
       <ContainerHeaderProducts>
-        <h1>Backoffice Loja Joga Junto</h1>
-        <div>Bem vindo: {user}</div>
-        <button onClick={logOut}>sair</button>
+        <Header />
+      <Carrousel />
       </ContainerHeaderProducts>
       <ProductsContainer>
         <nav>
@@ -216,14 +207,7 @@ export const Products = () => {
             </Accordion.Root>
           </ul>
         </nav>
-        <section>
-          <header>
-            <ul>
-              <li>Camisas</li>
-              <li>Canecas</li>
-              <li>Bonés</li>
-            </ul>
-          </header>
+
           <ProductsList>
             <Dialog.Root>
               <header>
@@ -284,10 +268,8 @@ export const Products = () => {
                         placeholder="Frete"
                       />
                     </div>
-                    <ToastContainer className="toast" />
-                    <button type="submit" onClick={notify}>
-                      adcionar produto
-                    </button>
+
+                    <button type="submit">adcionar produto</button>
                   </FormContainer>
                 </Content>
               </Overlay>
@@ -310,7 +292,6 @@ export const Products = () => {
               })}
             </CardContainer>
           </ProductsList>
-        </section>
       </ProductsContainer>
     </div>
   );
