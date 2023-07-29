@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { ContextProducts } from "../../context/products";
 import {
-  ContainerHeaderProducts,
+  Container,
   ProductsContainer,
+  ContainerHeaderProducts,
   ProductsList,
   Cards,
   CardContainer,
@@ -21,14 +22,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 import { Carrousel } from "../../components/swiper";
 import React from "react";
 import { Header } from "../../components/header";
+import { IoIosAdd } from "react-icons/io";
+import { MdShoppingCart } from "react-icons/md";
+import SearchBar from "@mkyy/mui-search-bar";
+import Marquee from "react-fast-marquee";
+import { AiFillThunderbolt } from "react-icons/ai";
+import { BiListCheck } from "react-icons/bi";
 
-const MAX_FILE_SIZE = 500000;
+const MAX_FILE_SIZE = 12500000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -52,7 +57,7 @@ const schema = z.object({
     ),
   category: z.string().nonempty("Categoria necessaria."),
   price: z.string().nonempty("Defina o preço do produto."),
-  shipment: z.string()
+  shipment: z.string(),
 });
 
 type FormProps = z.infer<typeof schema>;
@@ -67,21 +72,12 @@ export const Products = () => {
     resolver: zodResolver(schema),
     mode: "all",
   });
-  
-  const navigate = useNavigate();
-
-  const dispatchToast = () => {
-    const firstError = Object.values(errors)[0];
-    if (firstError) {
-      console.log("Error message:", firstError.message);
-      toast.error(firstError.message);
-    }
-  };
 
   const { products, setProducts } = useContext(ContextProducts);
 
-
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
@@ -126,18 +122,48 @@ export const Products = () => {
       console.log(error);
     }
   };
-  dispatchToast()
+  const handleSearch = (labelOptionValue: string) => {
+    setTextFieldValue(labelOptionValue);
+    console.log(textFieldValue);
+  };
+
+  console.log(errors);
   return (
-    <div>
-      <ToastContainer className="toast" />
+    <Container>
       <ContainerHeaderProducts>
         <Header />
-      <Carrousel />
+        <Carrousel />
       </ContainerHeaderProducts>
+      <div className="marqueeContainer">
+        <Marquee pauseOnHover={true} speed={150} className="marquee">
+          <div>
+            <span>
+              <AiFillThunderbolt /> Explore o poder do Jogajunto!
+            </span>
+            <span>
+              <AiFillThunderbolt /> Suas melhores ofertas merecem destaque no
+              Jogajunto!
+            </span>
+            <span>
+              <AiFillThunderbolt /> Produtos de todas as categorias, em um só
+              lugar
+            </span>
+          </div>
+        </Marquee>
+      </div>
       <ProductsContainer>
         <nav>
           <ul>
-            <h2 className="first">Filtar por:</h2>
+            <SearchBar
+              width={"100%"}
+              value={textFieldValue}
+              onChange={(newValue) => setTextFieldValue(newValue)}
+              onSearch={handleSearch}
+              placeholder="Pesquisar um produto"
+            />
+            <h2 className="first">
+              <BiListCheck /> Products <span>{products.length}</span>
+            </h2>
             <Accordion.Root
               className="AccordionRoot"
               type="single"
@@ -201,98 +227,101 @@ export const Products = () => {
                   </ContentList>
                 </Accordion.Content>
               </FilterComponent>
-              <FilterComponent className="AccordionRoot">
-                <h2>Frete grátis</h2>
-              </FilterComponent>
             </Accordion.Root>
           </ul>
         </nav>
 
-          <ProductsList>
-            <Dialog.Root>
-              <header>
-                <input type="text" placeholder="Pesquisar" />
-                <Dialog.Trigger asChild>
-                  <button>Adicionar</button>
-                </Dialog.Trigger>
-              </header>
-              <Overlay>
-                <Content>
-                  <FormContainer onSubmit={handleSubmit(Submit)}>
-                    <h1>Painel de cadastro</h1>
-                    <div>
-                      <label>Nome do Produto</label>
-                      <input
-                        {...register("name")}
-                        type="text"
-                        placeholder="Camiseta..."
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Descrição do Produto</label>
-                      <input
-                        {...register("description")}
-                        type="text"
-                        placeholder="Camisa branca tamanho P"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Preço</label>
-                      <input
-                        {...register("price")}
-                        type="text"
-                        placeholder="R$ 59,90"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">Categoria</label>
-                      <input
-                        {...register("category")}
-                        type="text"
-                        placeholder="Camisas"
-                      />
-                    </div>
-                    <div>
-                      <label>Imagens:</label>
-                      <input
-                        {...register("image")}
-                        className="custom-file-input"
-                        type="file"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="">frete:</label>
-                      <input
-                        {...register("shipment")}
-                        type="text"
-                        placeholder="Frete"
-                      />
-                    </div>
-
-                    <button type="submit">adcionar produto</button>
-                  </FormContainer>
-                </Content>
-              </Overlay>
-            </Dialog.Root>
-            <CardContainer>
-              {filteredProducts.map((item) => {
-                return (
+        <ProductsList>
+          <Dialog.Root>
+            <header>
+              <h1>
+                {" "}
+                <MdShoppingCart size="22" color="#ffd700" />
+                Backoffice JogaJunto
+              </h1>
+              <Dialog.Trigger asChild>
+                <button>
+                  <IoIosAdd size="20" /> Adicionar
+                </button>
+              </Dialog.Trigger>
+            </header>
+            <Overlay>
+              <Content>
+                <FormContainer onSubmit={handleSubmit(Submit)}>
+                  <h1>Painel de cadastro</h1>
                   <div>
-                    <Cards>
-                      <img src={item.image} alt={item.description} />
-                    </Cards>
-                    <DetailsCard>
-                      <div>
-                        <h1>{item.name}</h1>
-                        <span>{item.price}</span>
-                      </div>
-                    </DetailsCard>
+                    <label>Nome do Produto</label>
+                    <input
+                      {...register("name")}
+                      type="text"
+                      placeholder="Camiseta..."
+                    />
                   </div>
-                );
-              })}
-            </CardContainer>
-          </ProductsList>
+                  <div>
+                    <label htmlFor="">Descrição do Produto</label>
+                    <input
+                      {...register("description")}
+                      type="text"
+                      placeholder="Camisa branca tamanho P"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Preço</label>
+                    <input
+                      {...register("price")}
+                      type="text"
+                      placeholder="R$ 59,90"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">Categoria</label>
+                    <input
+                      {...register("category")}
+                      type="text"
+                      placeholder="Camisas"
+                    />
+                  </div>
+                  <div>
+                    <label>Imagens:</label>
+                    <input
+                      {...register("image")}
+                      className="custom-file-input"
+                      type="file"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="">frete:</label>
+                    <input
+                      {...register("shipment")}
+                      type="text"
+                      placeholder="Frete"
+                    />
+                  </div>
+
+                  <button type="submit">adcionar produto</button>
+                </FormContainer>
+              </Content>
+            </Overlay>
+          </Dialog.Root>
+          <CardContainer>
+            {filteredProducts.map((item) => {
+              return (
+                <div>
+                  <Cards>
+                    <img src={item.image} alt={item.description} />
+                  </Cards>
+                  <DetailsCard>
+                    <div>
+                      <h1>{item.name}</h1>
+                      <span>R$ {item.price}</span>
+                    </div>
+                  </DetailsCard>
+                </div>
+              );
+            })}
+          </CardContainer>
+        </ProductsList>
       </ProductsContainer>
-    </div>
+    </Container>
   );
 };

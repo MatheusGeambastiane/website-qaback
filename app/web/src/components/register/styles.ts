@@ -77,7 +77,7 @@ input {
 
 export const Button = styled.button`
   border: none;
-  width: 15rem;
+  width: 10rem;
   border-radius: 87px;
   padding: 14px 59px;
   font-size: 14px;

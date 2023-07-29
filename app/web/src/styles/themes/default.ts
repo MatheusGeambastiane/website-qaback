@@ -5,4 +5,6 @@ export const defaultTheme = {
   blue: "#4863F7",
   black: "#000",
   text: "#000",
+  field: "#666666",
+  neutral: '#eaeaea'
 } as const;

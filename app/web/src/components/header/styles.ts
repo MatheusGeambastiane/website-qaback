@@ -2,14 +2,14 @@ import { styled } from "styled-components";
 
 export const Cointaner = styled.div`
     padding: 1.5rem 2rem;
-    color: ${(props) => props.theme.white};
+    color: ${(props) => props.theme.text};
     font-size: .75rem;
     display: flex;
-    background-color: #0C0C0C;
     align-items: center;
     justify-content: space-between;
     h1 {
-        font-weight: 200;
+        font-weight: 300;
+        font-size: 1.5rem;
     }
     ul {
         list-style: none;
