@@ -14,6 +14,7 @@ import {
   FilterComponent,
   OpenFilters,
   ContentList,
+  ContainerButtons,
 } from "./styles";
 import axios from "axios";
 import * as z from "zod";
@@ -32,6 +33,9 @@ import SearchBar from "@mkyy/mui-search-bar";
 import Marquee from "react-fast-marquee";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { BiListCheck } from "react-icons/bi";
+import { FaTshirt } from "react-icons/fa";
+import { GiConverseShoe } from "react-icons/gi";
+import { MdLocalMall } from "react-icons/md";
 
 const MAX_FILE_SIZE = 12500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -55,9 +59,9 @@ const schema = z.object({
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
-  category: z.string().nonempty("Categoria necessaria."),
+  category: z.string(),
   price: z.string().nonempty("Defina o preço do produto."),
-  shipment: z.string(),
+  shipment: z.string().nonempty("Defina o valor do frete."),
 });
 
 type FormProps = z.infer<typeof schema>;
@@ -77,10 +81,16 @@ export const Products = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
+  const [activeButton, setActiveButton] = useState("");
+
   const [textFieldValue, setTextFieldValue] = useState("");
 
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
+  };
+
+  const handleClick = (value: string) => {
+    setActiveButton(value);
   };
 
   const filteredProducts = selectedCategory
@@ -162,7 +172,7 @@ export const Products = () => {
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
-              <BiListCheck /> Products <span>{products.length}</span>
+              <BiListCheck /> Produtos <span>{products.length}</span>
             </h2>
             <Accordion.Root
               className="AccordionRoot"
@@ -230,7 +240,6 @@ export const Products = () => {
             </Accordion.Root>
           </ul>
         </nav>
-
         <ProductsList>
           <Dialog.Root>
             <header>
@@ -248,7 +257,7 @@ export const Products = () => {
             <Overlay>
               <Content>
                 <FormContainer onSubmit={handleSubmit(Submit)}>
-                  <h1>Painel de cadastro</h1>
+                  <h1>Cadastro de produto</h1>
                   <div>
                     <label>Nome do Produto</label>
                     <input
@@ -257,6 +266,7 @@ export const Products = () => {
                       placeholder="Camiseta..."
                     />
                   </div>
+                  <div></div>
                   <div>
                     <label htmlFor="">Descrição do Produto</label>
                     <input
@@ -264,6 +274,49 @@ export const Products = () => {
                       type="text"
                       placeholder="Camisa branca tamanho P"
                     />
+                  </div>
+                  <div>
+                    <label htmlFor="">Categoria</label>
+                    <ContainerButtons>
+                      <label
+                        className={activeButton === "Roupas" ? "active" : ""}
+                      >
+                        <FaTshirt size="22" />
+                        <span>Roupas</span>
+                        <input
+                          type="radio"
+                          value="Roupas"
+                          {...register("category")}
+                          onClick={() => handleClick("Roupas")}
+                        />
+                      </label>
+                      <label
+                        className={activeButton === "Camisas" ? "active" : ""}
+                      >
+                        <GiConverseShoe size="22" />
+                        <span>Calçados</span>
+                        <input
+                          type="radio"
+                          value="Camisas"
+                          {...register("category")}
+                          onClick={() => handleClick("Camisas")}
+                        />
+                      </label>
+                      <label
+                        className={
+                          activeButton === "Acessorios" ? "active" : ""
+                        }
+                      >
+                        <MdLocalMall size="22" />
+                        <span>Acessorios</span>
+                        <input
+                          type="radio"
+                          value="Acessorios"
+                          {...register("category")}
+                          onClick={() => handleClick("Acessorios")}
+                        />
+                      </label>
+                    </ContainerButtons>
                   </div>
                   <div>
                     <label htmlFor="">Preço</label>
@@ -274,31 +327,22 @@ export const Products = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="">Categoria</label>
-                    <input
-                      {...register("category")}
-                      type="text"
-                      placeholder="Camisas"
-                    />
-                  </div>
-                  <div>
-                    <label>Imagens:</label>
+                    <label>Imagens</label>
                     <input
                       {...register("image")}
-                      className="custom-file-input"
+                      className="custom-file-input input-img"
                       type="file"
                     />
                   </div>
                   <div>
-                    <label htmlFor="">frete:</label>
+                    <label htmlFor="">Frete</label>
                     <input
                       {...register("shipment")}
                       type="text"
                       placeholder="Frete"
                     />
                   </div>
-
-                  <button type="submit">adcionar produto</button>
+                  <button type="submit">ENVIAR NOVO PRODUTO</button>
                 </FormContainer>
               </Content>
             </Overlay>
@@ -313,7 +357,10 @@ export const Products = () => {
                   <DetailsCard>
                     <div>
                       <h1>{item.name}</h1>
-                      <span>R$ {item.price}</span>
+                      <span>{item.description}</span>
+                    </div>
+                    <div>
+                      <span className="price">R$ {item.price}</span>
                     </div>
                   </DetailsCard>
                 </div>

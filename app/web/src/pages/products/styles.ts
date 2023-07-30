@@ -45,7 +45,7 @@ export const ProductsContainer = styled.section`
     display: flex;
     align-items: center;
     font-size: 1rem;
-    gap: .2rem;
+    gap: 0.2rem;
     padding-bottom: 1.6rem;
     padding-top: 2.1rem;
     justify-self: center;
@@ -53,7 +53,7 @@ export const ProductsContainer = styled.section`
     span {
       margin-left: 5px;
       margin-top: 2px;
-      font-size: .85rem;
+      font-size: 0.85rem;
       font-weight: 400;
     }
   }
@@ -119,38 +119,29 @@ export const Cards = styled.div`
   max-width: 19rem;
   border-radius: 6px;
   img {
-    padding: .5rem;
+    padding: 0.5rem;
     width: 100%;
     max-width: 220px;
   }
 `;
 
 export const DetailsCard = styled.div`
-h1 {
-  font-size: 1.25rem;
-}
+  display: flex;
+  max-width: 19rem;
+  justify-content: space-between;
+  .price {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: 1rem;
+  }
+  span {
+    font-size: 0.75rem;
+    color: ${(props) => props.theme.eaeaea};
+  }
   div {
-    padding: 1rem 1rem;
-    p {
-      margin: 0;
-      color: #607196;
-      text-transform: lowercase;
-      padding: 0;
-    }
-    display: flex;
-    align-items: left;
-    flex-direction: column;
-
-    div {
-      span {
-        font-size: 0.85rem;
-        font-family: "Josefin Sans", sans-serif;
-        margin-top: 0.1rem;
-        font-weight: 400;
-      }
-      display: flex;
-      flex-direction: column;
-    }
+    padding: 1rem 0.5rem;
   }
   button:hover {
     cursor: pointer;
@@ -164,10 +155,6 @@ export const CardContainer = styled.div`
   grid-template-rows: 1fr;
   grid-column-gap: 10px;
   grid-row-gap: 2rem;
-
-  div {
-    width: 100%;
-  }
   @media (min-width: 250px) {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -201,10 +188,62 @@ export const Overlay = styled(Dialog.Overlay)`
 `;
 export const Content = styled(Dialog.Content)`
   width: 35rem;
-  background-color: ${(props) => props.theme.yellow};
+  background-color: ${(props) => props.theme.white};
   border-radius: 14px;
 `;
 
+export const ContainerButtons = styled.div`
+  gap: 12px;
+  display: flex;
+  flex-direction: row!important;
+  svg {
+    color: ${(props) => props.theme.text};
+  }
+  label {
+    font-size: 13px;
+    font-weight: 400!important;
+    text-transform: uppercase;
+    color: black;
+
+    display: flex;
+    align-items: center;
+    align-content: center;
+
+    input {
+      width: 0px;
+      display: none;
+      visibility: hidden;
+      position: absolute;
+    }
+    cursor: pointer;
+    background-color: red;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 13px;
+    gap: 12px;
+
+    background: ${(props) => props.theme.neutral};
+
+    border-radius: 6px;
+
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+  }
+  label:hover {
+   color: ${(props) => props.theme.text};;
+  }
+  label.active {
+    border: 1px solid ${(props) => props.theme.yellow};
+    background: rgba(250, 227, 95, 0.185);
+    svg {
+    color: ${(props) => props.theme.yellow};
+  }
+  }
+`;
 export const FormContainer = styled.form`
   padding: 2rem;
   display: flex;
@@ -220,16 +259,9 @@ export const FormContainer = styled.form`
   input {
     width: 100%;
     padding: 1rem;
-    border-radius: 14px;
-    border: 1px solid #000;
+    border-radius: 6px;
+    border: 1px solid #0002;
     background: #fff;
-  }
-  .none {
-    display: none;
-  }
-  .toast {
-    color: red;
-    width: 15rem;
   }
   .Toastify__progress-bar-theme--light {
     background: ${(props) => props.theme.yellow};
@@ -241,36 +273,38 @@ export const FormContainer = styled.form`
     visibility: hidden;
   }
   .custom-file-input::before {
-    content: "Selecionar imagem";
+    content: "Upload Image";
     display: inline-block;
-    border: 1px solid #999;
     border-radius: 3px;
-    padding: 0.5rem;
     outline: none;
     white-space: nowrap;
     color: black;
     cursor: pointer;
     text-shadow: 1px 1px #fff;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 10pt;
   }
   .custom-file-input:hover::before {
     border-color: black;
   }
-  .custom-file-input:active::before {
-    background: ${(props) => props.theme.black};
-  }
 
   button {
-    margin-top: 1rem;
     cursor: pointer;
-    border: none;
-    border-radius: 61px;
-    font-size: 1rem;
-    color: ${(props) => props.theme.white};
-    background-color: ${(props) => props.theme.black};
-    padding: 1rem 2rem;
-    width: 50%;
+      border-radius: 6px;
+      background-color: ${(props) => props.theme.yellow};
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      width: 100%;
+      color: ${(props) => props.theme.text};
+      border: 1px solid ${(props) => props.theme.yellow};
+      display: flex;
+      gap: 0.2rem;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 3.2rem;
+
   }
   label {
     font-weight: 600;
