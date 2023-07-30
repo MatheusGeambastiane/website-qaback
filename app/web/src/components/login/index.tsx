@@ -77,14 +77,12 @@ export const Login = () => {
             setMsgAlert("");
           }, 3000);
           localStorage.setItem("auth", "true");
-
           localStorage.setItem("jwt", response.data.token);
           const userData = response.data.user.email;
           localStorage.setItem("user", JSON.stringify(userData));
-          console.log(userData)
+          console.log(userData);
           navigate("/products");
-        }
-        if (
+        } else if (
           response.status === 200 &&
           response.data.msg === "Senha incorreta"
         ) {
@@ -92,8 +90,7 @@ export const Login = () => {
           setTimeout(() => {
             setMsgAlert("");
           }, 3000);
-        }
-        if (
+        } else if (
           response.status === 200 &&
           response.data.msg === "Usuário não registrado!"
         ) {
@@ -101,10 +98,12 @@ export const Login = () => {
           setTimeout(() => {
             setMsgAlert("");
           }, 3000);
+
+          console.log("Resposta inesperada do servidor:", response);
         }
       })
-      .catch(() => {
-        alert("Erro ao efetuar login");
+      .catch((error) => {
+        alert(error, 'Usuário ou senha inválida');
       });
   };
 

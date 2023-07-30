@@ -36,6 +36,7 @@ import { BiListCheck } from "react-icons/bi";
 import { FaTshirt } from "react-icons/fa";
 import { GiConverseShoe } from "react-icons/gi";
 import { MdLocalMall } from "react-icons/md";
+import {useFilter} from '../../hooks/useFilter'
 
 const MAX_FILE_SIZE = 12500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -89,6 +90,7 @@ export const Products = () => {
     setSelectedCategory(category);
   };
 
+
   const handleClick = (value: string) => {
     setActiveButton(value);
   };
@@ -100,6 +102,8 @@ export const Products = () => {
   useEffect(() => {
     getProducts(setProducts);
   }, [setProducts]);
+
+  useFilter('category', 'category')
 
   const Submit = (data: FormProps) => {
     try {
@@ -145,7 +149,7 @@ export const Products = () => {
         <Carrousel />
       </ContainerHeaderProducts>
       <div className="marqueeContainer">
-        <Marquee pauseOnHover={true} speed={150} className="marquee">
+        <Marquee speed={150} className="marquee">
           <div>
             <span>
               <AiFillThunderbolt /> Explore o poder do Jogajunto!
@@ -203,9 +207,9 @@ export const Products = () => {
                 <ContentList>
                   <li
                     className="contentList"
-                    onClick={() => handleCategoryFilter("Camisas")}
+                    onClick={() => handleCategoryFilter("Calçados")}
                   >
-                    Camisas
+                    Calçados
                   </li>
                 </ContentList>
                 <ContentList>

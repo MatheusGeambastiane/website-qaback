@@ -61,39 +61,42 @@ export const addProducts = (req, res) => {
     })
 }
 export const Login = (req, res) => {
-  console.log('Chegamos no Login')
+  console.log('Chegamos no Login');
   const email = req.body.email;
   const password = req.body.password;
 
-  db.query("SELECT * FROM usuarios WHERE email = ?", [email], (err, result) => {
+  db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, result) => {
     if (err) {
-      res.status(500).json({ error: "Error fetching user" });
+      res.status(500).json({ error: 'Error fetching user' });
     }
 
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
         if (error) {
-          res.status(500).json({ error: "Error comparing passwords" });
+          res.status(500).json({ error: 'Error comparing passwords' });
         }
 
         if (response) {
           const user = result[0];
-          
-          // Gerar o token JWT com informações do usuário
-          const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '24h' });
-          
-          delete user.password
 
-          res.status(200).json({ msg: "Usuário logado com sucesso!", token: token, user });
+          // Gerar o token JWT com informações do usuário
+          const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, {
+            expiresIn: '24h',
+          });
+
+          delete user.password;
+
+          res.status(200).json({ msg: 'Usuário logado com sucesso!', token: token, user });
         } else {
-          res.status(401).json({ error: "Senha incorreta" });
+          res.status(401).json({ msg: 'Senha incorreta' }); // Retornar a mensagem no corpo da resposta
         }
       });
     } else {
-      res.status(401).json({ error: "Usuário não registrado!" });
+      res.status(401).json({ msg: 'Usuário não registrado!' });
     }
   });
 };
+
 
 export const Register = (req, res) => {
   const email = req.body.email;
