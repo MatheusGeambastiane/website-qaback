@@ -7,6 +7,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+import path from 'path'
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, 'uploads')));
+
 app.use("/", useRoutes);
+
+app.post("/", (req, res) => {
+  console.log(req.body); // Verificar se os dados do formulário estão chegando corretamente
+  // Restante do código para inserir os dados no banco de dados
+});
 
 app.listen(3300);
