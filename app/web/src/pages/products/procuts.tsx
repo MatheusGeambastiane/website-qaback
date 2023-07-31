@@ -85,8 +85,15 @@ export const Products = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  const [selectedPrice, setSelectedPrice] = useState("");
+
+
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
+  };
+
+  const handlePriceFilter = (price: string) => {
+    setSelectedPrice(price);
   };
 
   const handleClick = (value: string) => {
@@ -101,7 +108,7 @@ export const Products = () => {
     getProducts(setProducts);
   }, [setProducts]);
 
-  useFilter("category", "category");
+  useFilter("category", "name");
 
   const Submit = (data: FormProps) => {
     try {
@@ -135,11 +142,11 @@ export const Products = () => {
     }
   };
 
-  const handleSearch = (labelOptionValue: string) => {
-    setTextFieldValue(labelOptionValue);
-    console.log(textFieldValue);
+   const handleSearch = (searchValue: string) => {
+    setTextFieldValue(searchValue); // This line may not be necessary
+    console.log(searchValue);
   };
-
+  
   console.log(errors);
   return (
     <Container>
@@ -171,7 +178,7 @@ export const Products = () => {
               width={"100%"}
               value={textFieldValue}
               onChange={(newValue) => setTextFieldValue(newValue)}
-              onSearch={handleSearch}
+              onSearch={handleSearch} // Pass the search input to handleSearch
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
@@ -243,9 +250,9 @@ export const Products = () => {
                   <li
                     className="contentList"
                     style={{
-                      fontWeight: selectedCategory === "100" ? 600 : "normal",
+                      fontWeight: selectedPrice === "100" ? 600 : "normal",
                     }}
-                    onClick={() => handleCategoryFilter("100")}
+                    onClick={() => handlePriceFilter("100")}
                   >
                     R$ 100,00
                   </li>
@@ -254,9 +261,9 @@ export const Products = () => {
                   <li
                     className="contentList"
                     style={{
-                      fontWeight: selectedCategory === "200" ? 600 : "normal",
+                      fontWeight: selectedPrice === "200" ? 600 : "normal",
                     }}
-                    onClick={() => handleCategoryFilter("200")}
+                    onClick={() => handlePriceFilter("200")}
                   >
                     R$ 200,00
                   </li>
@@ -265,9 +272,9 @@ export const Products = () => {
                   <li
                     className="contentList"
                     style={{
-                      fontWeight: selectedCategory === "300" ? 600 : "normal",
+                      fontWeight: selectedPrice === "300" ? 600 : "normal",
                     }}
-                    onClick={() => handleCategoryFilter("300")}
+                    onClick={() => handlePriceFilter("300")}
                   >
                     R$ 300,00
                   </li>
@@ -276,9 +283,9 @@ export const Products = () => {
                   <li
                     className="contentList"
                     style={{
-                      fontWeight: selectedCategory === "400" ? 600 : "normal",
+                      fontWeight: selectedPrice === "400" ? 600 : "normal",
                     }}
-                    onClick={() => handleCategoryFilter("400")}
+                    onClick={() => handlePriceFilter("400")}
                   >
                     R$ 400,00
                   </li>
@@ -396,7 +403,7 @@ export const Products = () => {
           <CardContainer>
             {filteredProducts.map((item) => {
               return (
-                <div>
+                <div key={item.id}>
                   <Cards>
                     <img src={item.image} alt={item.description} />
                   </Cards>

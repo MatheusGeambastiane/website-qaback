@@ -1,6 +1,5 @@
 import { useKeenSlider } from "keen-slider/react"
 import { ImgOne, ImgTree, ImgTwo } from "./styles";
-import React from "react";
 
 export const Carrousel = () => {
   const [sliderRef] = useKeenSlider<HTMLDivElement>(
