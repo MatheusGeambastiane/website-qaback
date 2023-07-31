@@ -103,7 +103,6 @@ export const Register = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     cursor: pointer;
     border: none;
     border-radius: 14px;
