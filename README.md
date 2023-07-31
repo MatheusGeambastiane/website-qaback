@@ -10,11 +10,11 @@ O Backoffice da Loja Jogajunto é uma ferramenta de gerenciamento que oferece co
 
 ## Bugs
 
-#### Filtro - searchbar não funciona
-#### Filtro - preço não funciona
-#### Painel de cadastro - não aceita virgula ex: 59,90 (não da pra enviar o produto)
-#### Painel de cadastro - Upload de img (padrão 5mb) aceitando até 20mb
-#### Funcionalidade - Da pra adicionar produto mas não tem como remover
+###### Filtro - searchbar não funciona
+###### Filtro - preço não funciona
+###### Painel de cadastro - não aceita virgula ex: 59,90 (não da pra enviar o produto)
+###### Painel de cadastro - Upload de img (padrão 5mb) aceitando até 20mb
+###### Funcionalidade - Da pra adicionar produto mas não tem como remover
 
 ### Stack utilizada
 
