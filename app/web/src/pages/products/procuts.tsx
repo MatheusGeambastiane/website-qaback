@@ -25,7 +25,6 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
 import "react-toastify/dist/ReactToastify.css";
 import { Carrousel } from "../../components/swiper";
-import React from "react";
 import { Header } from "../../components/header";
 import { IoIosAdd } from "react-icons/io";
 import { MdShoppingCart } from "react-icons/md";
@@ -36,7 +35,7 @@ import { BiListCheck } from "react-icons/bi";
 import { FaTshirt } from "react-icons/fa";
 import { GiConverseShoe } from "react-icons/gi";
 import { MdLocalMall } from "react-icons/md";
-import {useFilter} from '../../hooks/useFilter'
+import { useFilter } from "../../hooks/useFilter";
 
 const MAX_FILE_SIZE = 12500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -80,16 +79,22 @@ export const Products = () => {
 
   const { products, setProducts } = useContext(ContextProducts);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
   const [activeButton, setActiveButton] = useState("");
 
   const [textFieldValue, setTextFieldValue] = useState("");
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const [selectedPrice, setSelectedPrice] = useState("");
+
 
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
   };
 
+  const handlePriceFilter = (price: string) => {
+    setSelectedPrice(price);
+  };
 
   const handleClick = (value: string) => {
     setActiveButton(value);
@@ -103,7 +108,7 @@ export const Products = () => {
     getProducts(setProducts);
   }, [setProducts]);
 
-  useFilter('category', 'category')
+  useFilter("category", "name");
 
   const Submit = (data: FormProps) => {
     try {
@@ -136,11 +141,12 @@ export const Products = () => {
       console.log(error);
     }
   };
-  const handleSearch = (labelOptionValue: string) => {
-    setTextFieldValue(labelOptionValue);
-    console.log(textFieldValue);
-  };
 
+   const handleSearch = (searchValue: string) => {
+    setTextFieldValue(searchValue); // This line may not be necessary
+    console.log(searchValue);
+  };
+  
   console.log(errors);
   return (
     <Container>
@@ -172,7 +178,7 @@ export const Products = () => {
               width={"100%"}
               value={textFieldValue}
               onChange={(newValue) => setTextFieldValue(newValue)}
-              onSearch={handleSearch}
+              onSearch={handleSearch} // Pass the search input to handleSearch
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
@@ -191,6 +197,9 @@ export const Products = () => {
                 <ContentList>
                   <li
                     className="contentList"
+                    style={{
+                      fontWeight: selectedCategory === "" ? 600 : "normal",
+                    }}
                     onClick={() => handleCategoryFilter("")}
                   >
                     Todos
@@ -199,6 +208,10 @@ export const Products = () => {
                 <ContentList>
                   <li
                     className="contentList"
+                    style={{
+                      fontWeight:
+                        selectedCategory === "Roupas" ? 600 : "normal",
+                    }}
                     onClick={() => handleCategoryFilter("Roupas")}
                   >
                     Roupas
@@ -207,6 +220,10 @@ export const Products = () => {
                 <ContentList>
                   <li
                     className="contentList"
+                    style={{
+                      fontWeight:
+                        selectedCategory === "Calçados" ? 600 : "normal",
+                    }}
                     onClick={() => handleCategoryFilter("Calçados")}
                   >
                     Calçados
@@ -215,31 +232,64 @@ export const Products = () => {
                 <ContentList>
                   <li
                     className="contentList"
+                    style={{
+                      fontWeight:
+                        selectedCategory === "Acessórios" ? 600 : "normal",
+                    }}
                     onClick={() => handleCategoryFilter("Acessórios")}
                   >
                     Acessórios
                   </li>
                 </ContentList>
               </FilterComponent>
-
-              <FilterComponent value="2" className="AccordionRoot">
+              <FilterComponent value="item-2">
                 <OpenFilters>
-                  <h2>Preços: </h2>
+                  <h2>Preço </h2>
                 </OpenFilters>
-                <Accordion.Content>
-                  <ContentList>
-                    <li className="contentList">Até R$ 100</li>
-                  </ContentList>
-                  <ContentList>
-                    <li className="contentList">Até R$ 100</li>
-                  </ContentList>
-                  <ContentList>
-                    <li className="contentList">Até R$ 100</li>
-                  </ContentList>
-                  <ContentList>
-                    <li className="contentList">Até R$ 100</li>
-                  </ContentList>
-                </Accordion.Content>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    style={{
+                      fontWeight: selectedPrice === "100" ? 600 : "normal",
+                    }}
+                    onClick={() => handlePriceFilter("100")}
+                  >
+                    R$ 100,00
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    style={{
+                      fontWeight: selectedPrice === "200" ? 600 : "normal",
+                    }}
+                    onClick={() => handlePriceFilter("200")}
+                  >
+                    R$ 200,00
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    style={{
+                      fontWeight: selectedPrice === "300" ? 600 : "normal",
+                    }}
+                    onClick={() => handlePriceFilter("300")}
+                  >
+                    R$ 300,00
+                  </li>
+                </ContentList>
+                <ContentList>
+                  <li
+                    className="contentList"
+                    style={{
+                      fontWeight: selectedPrice === "400" ? 600 : "normal",
+                    }}
+                    onClick={() => handlePriceFilter("400")}
+                  >
+                    R$ 400,00
+                  </li>
+                </ContentList>
               </FilterComponent>
             </Accordion.Root>
           </ul>
@@ -248,7 +298,6 @@ export const Products = () => {
           <Dialog.Root>
             <header>
               <h1>
-                {" "}
                 <MdShoppingCart size="22" color="#ffd700" />
                 Backoffice JogaJunto
               </h1>
@@ -354,7 +403,7 @@ export const Products = () => {
           <CardContainer>
             {filteredProducts.map((item) => {
               return (
-                <div>
+                <div key={item.id}>
                   <Cards>
                     <img src={item.image} alt={item.description} />
                   </Cards>

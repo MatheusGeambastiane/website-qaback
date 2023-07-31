@@ -103,7 +103,7 @@ export const Login = () => {
         }
       })
       .catch((error) => {
-        alert(error, 'Usuário ou senha inválida');
+        alert(`${error} Usuario ou senha invalida`);
       });
   };
 

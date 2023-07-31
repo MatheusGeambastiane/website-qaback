@@ -4,7 +4,6 @@ export const ImgOne = styled.div`
   background-image: url("https://cdn.discordapp.com/attachments/369610381024559132/1134648792193433650/Layer_2.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
   height: 450px;
 `;
 
