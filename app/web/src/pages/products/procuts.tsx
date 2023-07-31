@@ -143,7 +143,7 @@ export const Products = () => {
   };
 
    const handleSearch = (searchValue: string) => {
-    setTextFieldValue(searchValue); // This line may not be necessary
+    setTextFieldValue(searchValue);
     console.log(searchValue);
   };
   

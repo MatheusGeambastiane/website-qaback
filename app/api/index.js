@@ -16,8 +16,7 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 app.use("/", useRoutes);
 
 app.post("/", (req, res) => {
-  console.log(req.body); // Verificar se os dados do formulário estão chegando corretamente
-  // Restante do código para inserir os dados no banco de dados
+  console.log(req.body);
 });
 
 app.listen(3300);
