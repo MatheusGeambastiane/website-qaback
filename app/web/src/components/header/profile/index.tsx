@@ -1,12 +1,11 @@
-import React, { ForwardedRef, forwardRef, useState } from "react";
+import { ForwardedRef, forwardRef, useState } from "react";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
-import classNames from "classnames";
 import { CaretDownIcon } from "@radix-ui/react-icons";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 
 const NavigationMenuDemo = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [user] = useState(() => {
     const userData = localStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;
@@ -28,7 +27,9 @@ const NavigationMenuDemo = () => {
           <NavigationMenu.Content className="NavigationMenuContent">
             <ul className="List one">
               <ListItem title="User">{resultado[0]}</ListItem>
-              <ListItem title="LogOut" onClick={logOut}>Sair</ListItem>
+              <ListItem title="LogOut" onClick={logOut}>
+                Sair
+              </ListItem>
             </ul>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
@@ -66,7 +67,7 @@ const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
     <li>
       <NavigationMenu.Link asChild>
         <a
-          className={classNames("ListItemLink", className)}
+          className={"ListItemLink " + className}
           {...props}
           ref={forwardedRef}
         >
