@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ContextProducts, ProductsType } from "../../context/products";
+import { ContextProducts } from "../../context/products";
 import {
   Container,
   ProductsContainer,
@@ -36,9 +36,11 @@ import { FaTshirt } from "react-icons/fa";
 import { GiConverseShoe } from "react-icons/gi";
 import { MdLocalMall } from "react-icons/md";
 import { useFilter } from "../../hooks/useFilter";
+import CircularProgress from "@mui/material/CircularProgress";
 import toast, { Toaster } from "react-hot-toast";
 import { TextField } from "@mui/material";
 import { FormataMoeda, MaskCurrency } from "../../utils/priceFormatter";
+import Skeleton from '@mui/material/Skeleton';
 
 const MAX_FILE_SIZE = 500000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -90,6 +92,8 @@ export const Products = () => {
 
   const [selectedPrice, setSelectedPrice] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
   };
@@ -103,13 +107,16 @@ export const Products = () => {
   };
 
   useEffect(() => {
-    getProducts(setProducts);
+    setTimeout(() => {
+      getProducts(setProducts);
+      setIsLoading(false);
+    }, 1000);
   }, [setProducts]);
 
   useFilter("category", "name");
 
   console.log(errors);
-  
+
   const Submit = (data: FormProps) => {
     const validation = schema.safeParse(data);
     if (!validation.success) {
@@ -150,7 +157,7 @@ export const Products = () => {
 
   const filteredProducts = selectedCategory
     ? products.filter((product) => product.category === selectedCategory)
-    :products;
+    : products;
 
   const searchLowerCase = textFieldValue.toLowerCase();
 
@@ -195,7 +202,8 @@ export const Products = () => {
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
-              <BiListCheck /> Produtos <span>{products.length}</span>
+              <BiListCheck /> Produtos{" "}
+              <span> {isLoading ? <CircularProgress size={12} color="primary" /> : products.length}</span>
             </h2>
             <Accordion.Root
               className="AccordionRoot"
@@ -422,28 +430,36 @@ export const Products = () => {
               </Content>
             </Overlay>
           </Dialog.Root>
-          <CardContainer>
-            {filterSearch.map((item: ProductsType) => {
-              return (
-                <div key={item.id}>
-                  <Cards>
-                    <img src={item.image} alt={item.description} />
-                  </Cards>
-                  <DetailsCard>
-                    <div>
-                      <h1>{item.name}</h1>
-                      <span>{item.description}</span>
-                    </div>
-                    <div>
-                      <span className="price">{MaskCurrency(item.price)}</span>
-                    </div>
-                  </DetailsCard>
-                </div>
-              );
-            })}
-          </CardContainer>
+          <div>
+            {isLoading ? (
+              <CardContainer>
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <Skeleton height={340} key={index} />
+                ))}
+              </CardContainer>
+            ) : (
+              <CardContainer>
+                {filterSearch.map((item) => (
+                  <div key={item.id}>
+                    <Cards>
+                      <img src={item.image} alt={item.description} />
+                    </Cards>
+                    <DetailsCard>
+                      <div>
+                        <h1>{item.name}</h1>
+                        <span>{item.description}</span>
+                      </div>
+                      <div>
+                        <span className="price">{MaskCurrency(item.price)}</span>
+                      </div>
+                    </DetailsCard>
+                  </div>
+                ))}
+              </CardContainer>
+            )}
+          </div>
         </ProductsList>
       </ProductsContainer>
-    </Container>
+    </Container >
   );
 };
