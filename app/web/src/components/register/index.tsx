@@ -15,7 +15,6 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { ErrorContainer } from "./styles";
 import { useNavigate } from "react-router-dom";
-import React from "react";
 
 const RegisterFormSchema = z
   .object({

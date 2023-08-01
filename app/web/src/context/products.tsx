@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { createContext, ReactNode, useState } from "react";
 
 export interface Products {
