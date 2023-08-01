@@ -23,6 +23,7 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import toast, { Toaster } from "react-hot-toast";
 
 const loginFormSchema = z.object({
   email: z
@@ -72,7 +73,7 @@ export const Login = () => {
           response.status === 200 &&
           response.data.msg === "Usuário logado com sucesso!"
         ) {
-          setMsgAlert("logado com sucesso");
+          toast.success("logado com sucesso");
           setTimeout(() => {
             setMsgAlert("");
           }, 3000);
@@ -80,38 +81,26 @@ export const Login = () => {
           localStorage.setItem("jwt", response.data.token);
           const userData = response.data.user.email;
           localStorage.setItem("user", JSON.stringify(userData));
-          console.log(userData);
           navigate("/products");
-        } else if (
-          response.status === 200 &&
-          response.data.msg === "Senha incorreta"
-        ) {
-          setMsgAlert("senha incorreta");
-          setTimeout(() => {
-            setMsgAlert("");
-          }, 3000);
-        } else if (
-          response.status === 200 &&
-          response.data.msg === "Usuário não registrado!"
-        ) {
-          setMsgAlert("Usuário não registrado!");
-          setTimeout(() => {
-            setMsgAlert("");
-          }, 3000);
-
-          console.log("Resposta inesperada do servidor:", response);
         }
+
+        console.log("Resposta inesperada do servidor:", response);
       })
       .catch((error) => {
-        alert(`${error} Usuario ou senha invalida`);
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              toast.error(error.response.data.msg);
+          }
+        }
       });
   };
 
   return (
     <>
       <FormContainer onSubmit={handleSubmit(handleForm)}>
+        <Toaster position="top-right" reverseOrder={false} />
         <label>Faça login</label>
-
         <TextField
           type="text"
           placeholder="Digite seu e-mail"

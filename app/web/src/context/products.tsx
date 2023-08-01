@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createContext, ReactNode, useState } from "react";
 
-export interface Products {
+export interface ProductsType {
   id: number;
   name: string;
   description: string;
@@ -21,8 +21,8 @@ interface User {
 }
 
 export interface ProductsContextType {
-  products: Products[];
-  setProducts: React.Dispatch<React.SetStateAction<Products[]>>;
+  products: ProductsType[];
+  setProducts: React.Dispatch<React.SetStateAction<ProductsType[]>>;
   user: User | null; // Aqui definimos a propriedade user do contexto como User | null
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
@@ -35,7 +35,7 @@ export const ContextProducts = createContext<ProductsContextType>({
 });
 
 export function ProductsProvider({ children }: ProductsProviderProps) {
-  const [products, setProducts] = useState<Products[]>([]);
+  const [products, setProducts] = useState<ProductsType[]>([]);
   const [user, setUser] = useState<User | null>(() => {
     const userData = localStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;

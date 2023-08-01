@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ContextProducts } from "../../context/products";
+import { ContextProducts, ProductsType } from "../../context/products";
 import {
   Container,
   ProductsContainer,
@@ -38,6 +38,7 @@ import { MdLocalMall } from "react-icons/md";
 import { useFilter } from "../../hooks/useFilter";
 import toast, { Toaster } from "react-hot-toast";
 import { TextField } from "@mui/material";
+import { FormataMoeda, MaskCurrency } from "../../utils/priceFormatter";
 
 const MAX_FILE_SIZE = 500000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -62,7 +63,7 @@ const schema = z.object({
       ".jpg, .jpeg, .png and .webp files are accepted."
     ),
   category: z.string(),
-  price: z.string().nonempty("Defina o preço do produto."),
+  price: z.string(),
   shipment: z.string().nonempty("Defina o valor do frete."),
 });
 
@@ -101,16 +102,14 @@ export const Products = () => {
     setActiveButton(value);
   };
 
-  const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category === selectedCategory)
-    : products;
-
   useEffect(() => {
     getProducts(setProducts);
   }, [setProducts]);
 
   useFilter("category", "name");
 
+  console.log(errors);
+  
   const Submit = (data: FormProps) => {
     const validation = schema.safeParse(data);
     if (!validation.success) {
@@ -122,7 +121,7 @@ export const Products = () => {
       const jwt = localStorage.getItem("jwt");
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("price", data.price);
+      formData.append("price", FormataMoeda(data.price));
       formData.append("category", data.category);
       formData.append("image", data.image[0]);
       formData.append("description", data.description);
@@ -149,12 +148,19 @@ export const Products = () => {
     }
   };
 
-  const handleSearch = (searchValue: string) => {
-    setTextFieldValue(searchValue);
-    console.log(searchValue);
-  };
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    :products;
 
-  console.log(errors);
+  const searchLowerCase = textFieldValue.toLowerCase();
+
+  const filterSearch = filteredProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchLowerCase) ||
+      product.description.toLowerCase().includes(searchLowerCase) ||
+      product.category.toLowerCase().includes(searchLowerCase)
+  );
+
   return (
     <Container>
       <ContainerHeaderProducts>
@@ -186,7 +192,6 @@ export const Products = () => {
               width={"100%"}
               value={textFieldValue}
               onChange={(newValue) => setTextFieldValue(newValue)}
-              onSearch={handleSearch}
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
@@ -418,7 +423,7 @@ export const Products = () => {
             </Overlay>
           </Dialog.Root>
           <CardContainer>
-            {filteredProducts.map((item) => {
+            {filterSearch.map((item: ProductsType) => {
               return (
                 <div key={item.id}>
                   <Cards>
@@ -430,7 +435,7 @@ export const Products = () => {
                       <span>{item.description}</span>
                     </div>
                     <div>
-                      <span className="price">R$ {item.price}</span>
+                      <span className="price">{MaskCurrency(item.price)}</span>
                     </div>
                   </DetailsCard>
                 </div>
