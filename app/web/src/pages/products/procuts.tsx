@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import * as z from "zod";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
@@ -39,7 +39,7 @@ import { useFilter } from "../../hooks/useFilter";
 import toast, { Toaster } from "react-hot-toast";
 import { TextField } from "@mui/material";
 
-const MAX_FILE_SIZE = 10000;
+const MAX_FILE_SIZE = 500000000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -52,10 +52,14 @@ const schema = z.object({
   description: z.string().nonempty("Descrição do produto necessaria."),
   image: z
     .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine((files) => files?.length == 1, "Image is required.")
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Tamanho da imagem não pode ser maior que 5mb.`
+    )
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
     ),
   category: z.string(),
   price: z.string().nonempty("Defina o preço do produto."),
@@ -69,7 +73,6 @@ export const Products = () => {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm<FormProps>({
     resolver: zodResolver(schema),
@@ -125,7 +128,7 @@ export const Products = () => {
       formData.append("description", data.description);
       formData.append("shipment", data.shipment);
       axios
-        .post("http://localhost:3300", formData, {
+        .post("http://localhost:3300/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: jwt,
@@ -391,20 +394,13 @@ export const Products = () => {
                   </div>
                   <div>
                     <label>Imagens</label>
-                    <Controller
-                      name="image"
-                      control={control}
-                      render={({ field }) => (
-                        <div>
-                          <input
-                            {...field}
-                            className="custom-file-input input-img imgInput"
-                            type="file"
-                          />
-                          <p>{errors.image?.message}</p>
-                        </div>
-                      )}
+                    <TextField
+                      {...register("image")}
+                      className="custom-file-input input-img"
+                      type="file"
+                      error={!!errors.image?.message}
                     />
+                    <p>{errors.image?.message?.toString()}</p>
                   </div>
                   <div>
                     <label htmlFor="">Frete</label>
