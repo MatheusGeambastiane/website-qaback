@@ -36,8 +36,10 @@ import { FaTshirt } from "react-icons/fa";
 import { GiConverseShoe } from "react-icons/gi";
 import { MdLocalMall } from "react-icons/md";
 import { useFilter } from "../../hooks/useFilter";
+import toast, { Toaster } from "react-hot-toast";
+import { TextField } from "@mui/material";
 
-const MAX_FILE_SIZE = 12500000;
+const MAX_FILE_SIZE = 10000;
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -48,17 +50,15 @@ const ACCEPTED_IMAGE_TYPES = [
 const schema = z.object({
   name: z.string().nonempty("Preencha o campo Nome"),
   description: z.string().nonempty("Descrição do produto necessaria."),
-  image: z
-    .any()
-    .refine((files) => files?.length == 1, "Image is required.")
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Tamanho da imagem não pode ser maior que 5mb.`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    ),
+  image: z.custom((value) => {
+    if (!value) return "Image is required.";
+    if (!(value instanceof File)) return "Invalid image file.";
+    if (value.size > MAX_FILE_SIZE)
+      return `Tamanho da imagem não pode ser maior que 5mb.`;
+    if (!ACCEPTED_IMAGE_TYPES.includes(value.type))
+      return ".jpg, .jpeg, .png and .webp files are accepted.";
+    return true; 
+  }),
   category: z.string(),
   price: z.string().nonempty("Defina o preço do produto."),
   shipment: z.string().nonempty("Defina o valor do frete."),
@@ -87,7 +87,6 @@ export const Products = () => {
 
   const [selectedPrice, setSelectedPrice] = useState("");
 
-
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
   };
@@ -111,6 +110,12 @@ export const Products = () => {
   useFilter("category", "name");
 
   const Submit = (data: FormProps) => {
+    const validation = schema.safeParse(data);
+    if (!validation.success) {
+      const errorMessage = validation.error.message;
+      toast.error(errorMessage);
+      return;
+    }
     try {
       const jwt = localStorage.getItem("jwt");
       const formData = new FormData();
@@ -128,13 +133,13 @@ export const Products = () => {
           },
         })
         .then((response) => {
-          console.log("Produto enviado com sucesso!");
+          toast.success("Produto enviado com sucesso!");
           console.log(response.data);
           getProducts(setProducts);
           reset();
         })
         .catch((error) => {
-          console.log("Erro ao enviar produto!");
+          toast.error("Erro ao enviar o produto!");
           console.log(error);
         });
     } catch (error) {
@@ -142,11 +147,11 @@ export const Products = () => {
     }
   };
 
-   const handleSearch = (searchValue: string) => {
+  const handleSearch = (searchValue: string) => {
     setTextFieldValue(searchValue);
     console.log(searchValue);
   };
-  
+
   console.log(errors);
   return (
     <Container>
@@ -154,6 +159,7 @@ export const Products = () => {
         <Header />
         <Carrousel />
       </ContainerHeaderProducts>
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="marqueeContainer">
         <Marquee speed={150} className="marquee">
           <div>
@@ -178,7 +184,7 @@ export const Products = () => {
               width={"100%"}
               value={textFieldValue}
               onChange={(newValue) => setTextFieldValue(newValue)}
-              onSearch={handleSearch} // Pass the search input to handleSearch
+              onSearch={handleSearch}
               placeholder="Pesquisar um produto"
             />
             <h2 className="first">
@@ -313,20 +319,23 @@ export const Products = () => {
                   <h1>Cadastro de produto</h1>
                   <div>
                     <label>Nome do Produto</label>
-                    <input
+                    <TextField
                       {...register("name")}
                       type="text"
                       placeholder="Camiseta..."
+                      error={!!errors.name?.message}
                     />
+                    <p>{errors.name?.message}</p>
                   </div>
-                  <div></div>
                   <div>
                     <label htmlFor="">Descrição do Produto</label>
-                    <input
+                    <TextField
                       {...register("description")}
                       type="text"
                       placeholder="Camisa branca tamanho P"
+                      error={!!errors.description?.message}
                     />
+                    <p>{errors.description?.message}</p>
                   </div>
                   <div>
                     <label htmlFor="">Categoria</label>
@@ -373,27 +382,33 @@ export const Products = () => {
                   </div>
                   <div>
                     <label htmlFor="">Preço</label>
-                    <input
+                    <TextField
                       {...register("price")}
                       type="text"
                       placeholder="R$ 59,90"
+                      error={!!errors.price?.message}
                     />
+                    <p>{errors.price?.message}</p>
                   </div>
                   <div>
                     <label>Imagens</label>
                     <input
                       {...register("image")}
-                      className="custom-file-input input-img"
+                      className="custom-file-input input-img imgInput"
                       type="file"
+                      error={!!errors.image?.message}
                     />
+                    <p>{errors.image?.message}</p>
                   </div>
                   <div>
                     <label htmlFor="">Frete</label>
-                    <input
+                    <TextField
                       {...register("shipment")}
                       type="text"
                       placeholder="Frete"
+                      error={!!errors.shipment?.message}
                     />
+                    <p>{errors.shipment?.message}</p>
                   </div>
                   <button type="submit">ENVIAR NOVO PRODUTO</button>
                 </FormContainer>

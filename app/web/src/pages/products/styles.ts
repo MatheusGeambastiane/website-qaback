@@ -256,7 +256,10 @@ export const FormContainer = styled.form`
     flex-direction: column;
     width: 100%;
   }
-  input {
+  .MuiInputBase-root {
+    padding: 0rem .5rem;
+  }
+  .imgInput {
     width: 100%;
     padding: 1rem;
     border-radius: 6px;
@@ -308,6 +311,10 @@ export const FormContainer = styled.form`
   }
   label {
     font-weight: 600;
+  }
+  p {
+    font-size: .75rem;
+    color: red;
   }
 `;
 export const Group = styled.section`
