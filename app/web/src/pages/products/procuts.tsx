@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import * as z from "zod";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Accordion from "@radix-ui/react-accordion";
 import { getProducts } from "../../services/getProducts";
@@ -50,15 +50,13 @@ const ACCEPTED_IMAGE_TYPES = [
 const schema = z.object({
   name: z.string().nonempty("Preencha o campo Nome"),
   description: z.string().nonempty("Descrição do produto necessaria."),
-  image: z.custom((value) => {
-    if (!value) return "Image is required.";
-    if (!(value instanceof File)) return "Invalid image file.";
-    if (value.size > MAX_FILE_SIZE)
-      return `Tamanho da imagem não pode ser maior que 5mb.`;
-    if (!ACCEPTED_IMAGE_TYPES.includes(value.type))
-      return ".jpg, .jpeg, .png and .webp files are accepted.";
-    return true; 
-  }),
+  image: z
+    .any()
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
   category: z.string(),
   price: z.string().nonempty("Defina o preço do produto."),
   shipment: z.string().nonempty("Defina o valor do frete."),
@@ -71,6 +69,7 @@ export const Products = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<FormProps>({
     resolver: zodResolver(schema),
@@ -392,13 +391,20 @@ export const Products = () => {
                   </div>
                   <div>
                     <label>Imagens</label>
-                    <input
-                      {...register("image")}
-                      className="custom-file-input input-img imgInput"
-                      type="file"
-                      error={!!errors.image?.message}
+                    <Controller
+                      name="image"
+                      control={control}
+                      render={({ field }) => (
+                        <div>
+                          <input
+                            {...field}
+                            className="custom-file-input input-img imgInput"
+                            type="file"
+                          />
+                          <p>{errors.image?.message}</p>
+                        </div>
+                      )}
                     />
-                    <p>{errors.image?.message}</p>
                   </div>
                   <div>
                     <label htmlFor="">Frete</label>
